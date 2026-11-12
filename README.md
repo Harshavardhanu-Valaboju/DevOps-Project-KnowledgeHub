@@ -303,13 +303,6 @@ git commit -m "Add project documentation"
 git push -u origin main
 ```
 
-If `origin` already exists, update it instead of adding it again:
-
-```powershell
-git remote set-url origin "https://github.com/YOUR-USERNAME/YOUR-REPOSITORY.git"
-git push -u origin main
-```
-
 Never upload real `.env` files, passwords, JWT secrets, `node_modules`, or generated build folders. The root `.gitignore` excludes the usual local-only files.
 
 ## Documentation
