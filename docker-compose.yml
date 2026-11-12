@@ -1,0 +1,36 @@
+services:
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    volumes: [mongo-data:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  backend:
+    build: ./backend
+    environment:
+      PORT: 5000
+      MONGODB_URI: mongodb://mongo:27017/knowledgehub
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      CLIENT_URL: http://localhost:8081
+    depends_on:
+      mongo: { condition: service_healthy }
+    ports: ["5000:5000"]
+  seed:
+    build: ./backend
+    command: node seed.js
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/knowledgehub
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-Admin@12345}
+      SEED_MODERATOR_PASSWORD: ${SEED_MODERATOR_PASSWORD:-Moderator@12345}
+    depends_on:
+      backend: { condition: service_started }
+    restart: "no"
+  frontend:
+    build: ./frontend
+    depends_on: [backend]
+    ports: ["8081:80"]
+volumes:
+  mongo-data:
