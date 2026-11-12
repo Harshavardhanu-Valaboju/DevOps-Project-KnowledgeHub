@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: knowledgehub-config
+data:
+  MONGODB_URI: mongodb://mongo:27017/knowledgehub
+  CLIENT_URL: http://localhost:30080
